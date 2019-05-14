@@ -28,27 +28,53 @@
         exit(3);
     } else {
         $jsonDecode= json_decode($result);
-        if(!trim($jsonDecode->protocols->$sessionName->bgp_state) === 'Established'){
-            echo $jsonDecode->protocols->$sessionName->bgp_state;
-            exit(2);
-        } else {
-            echo $jsonDecode->protocols->$sessionName->bgp_state." - exported: ".$jsonDecode->protocols->$sessionName->routes->exported." imported: ".$jsonDecode->protocols->$sessionName->routes->imported." preferred: ".$jsonDecode->protocols->$sessionName->routes->preferred." | export_updates_accepted=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->accepted
+        switch (trim($jsonDecode->protocols->$sessionName->bgp_state)) {
+            case "Established":
+                echo $jsonDecode->protocols->$sessionName->bgp_state." - exported: ".$jsonDecode->protocols->$sessionName->routes->exported." imported: ".$jsonDecode->protocols->$sessionName->routes->imported." preferred: ".$jsonDecode->protocols->$sessionName->routes->preferred." | 
+                    
+                    export_updates_accepted=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->accepted
+                    ." export_updates_ignored=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->ignored
+                    ." export_updates_received=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->received
+                    ." export_updates_rejected=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->rejected
 
-            ." export_updates_ignored=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->ignored
-            ." export_updates_received=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->received
-            ." export_updates_rejected=".$jsonDecode->protocols->$sessionName->route_changes->export_updates->rejected
+                    ." import_updates_accepted=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->accepted
+                    ." import_updates_filtered=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->filtered
+                    ." import_updates_ignored=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->ignored
+                    ." import_updates_received=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->received
+                    ." import_updates_rejected=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->rejected
 
-            ." import_updates_accepted=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->accepted
-            ." import_updates_filtered=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->filtered
-            ." import_updates_ignored=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->ignored
-            ." import_updates_received=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->received
-            ." import_updates_rejected=".$jsonDecode->protocols->$sessionName->route_changes->import_updates->rejected
+                    ." import_withdraws_accepted=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->accepted
+                    ." import_withdraws_filtered=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->filtered
+                    ." import_withdraws_received=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->received
+                    ." import_withdraws_rejected=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->rejected
 
-            ." import_withdraws_accepted=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->accepted
-            ." import_withdraws_filtered=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->filtered
-            ." import_withdraws_received=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->received
-            ." import_withdraws_rejected=".$jsonDecode->protocols->$sessionName->route_changes->import_withdraws->rejected;
+                    ." routes_exported=".$jsonDecode->protocols->$sessionName->routes->exported
+                    ." routes_imported=".$jsonDecode->protocols->$sessionName->routes->imported
+                    ." routes_preferred=".$jsonDecode->protocols->$sessionName->routes->preferred;
+                ;
 
-            exit(0);
+                exit(0);
+                break;
+            case "Down":
+                echo $jsonDecode->protocols->$sessionName->bgp_state. " - exported: ".$jsonDecode->protocols->$sessionName->routes->exported." imported: ".$jsonDecode->protocols->$sessionName->routes->imported." preferred: ".$jsonDecode->protocols->$sessionName->routes->preferred." | routes_exported=".$jsonDecode->protocols->$sessionName->routes->exported
+                    ." routes_imported=".$jsonDecode->protocols->$sessionName->routes->imported
+                    ." routes_preferred=".$jsonDecode->protocols->$sessionName->routes->preferred;
+                exit(2);
+                break;
+            case "Active":
+                echo $jsonDecode->protocols->$sessionName->bgp_state. " - exported: ".$jsonDecode->protocols->$sessionName->routes->exported." imported: ".$jsonDecode->protocols->$sessionName->routes->imported." preferred: ".$jsonDecode->protocols->$sessionName->routes->preferred." | routes_exported=".$jsonDecode->protocols->$sessionName->routes->exported
+                    ." routes_imported=".$jsonDecode->protocols->$sessionName->routes->imported
+                    ." routes_preferred=".$jsonDecode->protocols->$sessionName->routes->preferred;
+                exit(1);
+                break;
+            case "Idle":
+                echo $jsonDecode->protocols->$sessionName->bgp_state. " - exported: ".$jsonDecode->protocols->$sessionName->routes->exported." imported: ".$jsonDecode->protocols->$sessionName->routes->imported." preferred: ".$jsonDecode->protocols->$sessionName->routes->preferred;
+                break;
+            case "Connect":
+                echo $jsonDecode->protocols->$sessionName->bgp_state. " - exported: ".$jsonDecode->protocols->$sessionName->routes->exported." imported: ".$jsonDecode->protocols->$sessionName->routes->imported." preferred: ".$jsonDecode->protocols->$sessionName->routes->preferred;
+                break;
+            default:
+                echo $jsonDecode->protocols->$sessionName->bgp_state;
+                exit(2);
         }
     }
